@@ -23,10 +23,12 @@ class QRDescomposition {
 public:
 	QRDescomposition();
 	void qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R);
+    bool solveQR(const Matrix<T> &A, vector<T> &x, const vector<T> &b);
 private:
     Matrix<T> ext_prod(Matrix<T> &a, Matrix<T> &b);
     Matrix<T> mat_prod(Matrix<T> &a, Matrix<T> &b);
     Matrix<T> scal_mat(Matrix<T> &a, int b);
+    Matrix<T> transpose(Matrix<T> &a);
 };
 
 template<typename T>
@@ -78,7 +80,6 @@ void QRDescomposition<T>::qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
 }
 
 
-
 template <typename T>
 Matrix<T> QRDescomposition<T>::ext_prod(Matrix<T> &a, Matrix<T> &b){
      Matrix<T> r(a.rows(),b.cols(),1);
@@ -102,12 +103,55 @@ Matrix<T> QRDescomposition<T>::mat_prod(Matrix<T> &a, Matrix<T> &b){
 
 template <typename T>
 Matrix<T> QRDescomposition<T>::scal_mat(Matrix<T> &a, int b){
-
     for(int i = 0; i < a.rows(); i++){
         for(int j = 0; j < a.cols(); j++)
             a(i,j) = a(i,j)*b;
     }
     return a;
+}
+
+template <typename T>
+Matrix<T> QRDescomposition<T>::transpose(Matrix<T> &a){
+    T x = 0;
+    Matrix<T> r(a.cols(),a.rows(),x);
+    for(int i = 0; i < a.rows(); i++){
+        for(int j = 0; j < a.cols(); j++)
+            r(j,i) = a(i,j);
+    }
+    return r;
+}
+
+
+template <typename T>
+bool QRDescomposition<T>::solveQR(const Matrix<T> &A, vector<T> &x, const vector<T> &b){
+    vector<T> bp;
+    Matrix<double> Q;
+    Matrix<double> R;
+    qr(A,Q,R);
+    Matrix<double> A1=mat_prod(Q,R);
+    int n = b.size();
+    for (int i =0; i< n;++i){
+        x.push_back(0);
+    }
+
+    Matrix<double> Qt = transpose(Q);
+    for (int i = 0; i< Qt.rows();++i){
+       bp.push_back(0);
+       for (int j = 0; j<Qt.cols();++j){
+        bp[i] += Qt(i,j) * b[j];
+        }
+    }
+
+    x[n-1] = bp[n-1] / R[n-1][n-1];
+    for (int i = n-2; i >= 0; --i){
+        T sum=bp[i];
+        for (int j = i+1;j < n; ++j){
+            sum -= R[i][j] * x[j];
+        }
+        x[i]=sum / R[i][i];
+    }
+    return 0;
+
 }
 
 #endif /* DESCOMPOSITION_QRDESCOMPOSITION_H_ */

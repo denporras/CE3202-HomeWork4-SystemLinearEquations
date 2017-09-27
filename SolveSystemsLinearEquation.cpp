@@ -41,18 +41,18 @@ void printVector(vector<T> &v){
 
 int main() {
 	Matrix<double> A= {{1,1,3},{1,2,4},{4,5,7}};
-	LUDescomposition<double> * d = new LUDescomposition<double>();
 	vector<double> x;
 	vector<double> b = {{7,11,20}};
+	LUDescomposition<double> * d = new LUDescomposition<double>();
 	d->solve(A, x, b);
 	printVector(x);
 
+	vector<double> x_1;
+	vector<double> b_1 = {{7,11,20}};
 	Matrix<double> A_1= {{2, 1, 3, 5},{-1, 0, 7, 1},{0, -1, -1, 3},{-3, 7, 4, 3},{1, 6, 4, -3}};
-	Matrix<double> Q;
-	Matrix<double> R;
 	QRDescomposition<double> * des = new QRDescomposition<double>();
-	des->qr(A_1,Q,R);
-	printMatrix(Q);
-	printMatrix(R);
+	//des->qr(A_1,Q,R);
+	des->solveQR(A,x_1,b_1);
+	printVector(x_1);
 	return 0;
 }
