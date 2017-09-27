@@ -220,6 +220,10 @@ namespace anpi
   Matrix<T> operator-(const Matrix<T>& a,
 		      const Matrix<T>& b);
   
+  template<class T>
+    Matrix<T> operator*(const Matrix<T>& a,
+    		const Matrix<T>& b);
+
 } // namespace ANPI
 
 // include the template implementations

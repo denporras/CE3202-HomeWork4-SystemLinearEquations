@@ -1,11 +1,12 @@
-/**
- * @brief Class that applies the LU descomposition
- * @author Dennis Porras Barrantes
- * @date 23/09/2017
+/*
+ * MatrixDescomposition.h
+ *
+ *  Created on: 27 sept. 2017
+ *      Author: dennis
  */
 
-#ifndef DESCOMPOSITION_LUDESCOMPOSITION_H_
-#define DESCOMPOSITION_LUDESCOMPOSITION_H_
+#ifndef DESCOMPOSITION_MATRIXDESCOMPOSITION_H_
+#define DESCOMPOSITION_MATRIXDESCOMPOSITION_H_
 
 #include <iostream>
 #include <cmath>
@@ -17,41 +18,46 @@
 
 using namespace std;
 
+namespace anpi {
+
 template<typename T>
-class LUDescomposition {
+class MatrixDescomposition {
 public:
-	LUDescomposition();
-	void lu(const anpi::Matrix<T> &A, anpi::Matrix<T> &LU);
-	void solve(const anpi::Matrix<T> &A, vector<T> &x, const vector<T> &b);
-	void inverse(const anpi::Matrix<T> &A ,anpi::Matrix<T> &Ai);
+	MatrixDescomposition();
+	void lu(const Matrix<T> &A, Matrix<T> &LU);
+	bool solveLU(const Matrix<T> &A, vector<T> &x, const vector<T> &b);
+	void inverse(const Matrix<T> &A ,Matrix<T> &Ai);
+
 private:
-	void inverse_aux(const anpi::Matrix<T> &B ,anpi::Matrix<T> &X);
+	void inverse_aux(const Matrix<T> &B, Matrix<T> &X);
 
 	bool inverseFlag;
 	int n;
 	vector<T> index;
-	T determinant;
-	anpi::Matrix<double> luMatrix;
+	Matrix<double> luMatrix;
 };
 
+} /* namespace anpi */
+
 template<typename T>
-LUDescomposition<T>::LUDescomposition() {
+inline anpi::MatrixDescomposition<T>::MatrixDescomposition() {
 	this->n = 0;
-	this->determinant = T(0);
 	this->inverseFlag = false;
 }
 
 template<typename T>
-void LUDescomposition<T>::lu(const anpi::Matrix<T> &A, anpi::Matrix<T> &LU){
+inline void anpi::MatrixDescomposition<T>::lu(const Matrix<T>& A,
+		Matrix<T>& LU) {
 	this->n = A.rows();
+	if(this->n != A.cols())
+		throw runtime_error("'A' matrix is not square in method: void lu(const Matrix<T>& A, Matrix<T>& LU)");
+	this->index.clear();
 	LU = A;
-	if(A.rows() != A.cols())
-			throw runtime_error("A matrix is not square in method: void lu(const Matrix<T>& A, Matrix<T>& LU)");
+
 	const T SMALL = 1.0e-40;
 	int i, i_max, j, k;
 	T big, tmp;
 	vector<T> scaling;
-	this->determinant = T(0);
 	for(i = 0; i < this->n; i++){
 		big = T(0);
 		for(j = 0; j < this->n; j++){
@@ -59,7 +65,7 @@ void LUDescomposition<T>::lu(const anpi::Matrix<T> &A, anpi::Matrix<T> &LU){
 				big = tmp;
 		}
 		if(abs(big) < numeric_limits<T>::epsilon()){
-			throw runtime_error("Singular matrix in method in void lu(const Matrix<T>& A, Matrix<T>& LU)");
+			throw runtime_error("Singular matrix in method: void lu(const Matrix<T>& A, Matrix<T>& LU)");
 		}
 		scaling.push_back(T(1)/big);
 	}
@@ -79,7 +85,6 @@ void LUDescomposition<T>::lu(const anpi::Matrix<T> &A, anpi::Matrix<T> &LU){
 				LU[i_max][j] = LU[k][j];
 				LU[k][j] = tmp;
 			}
-			this->determinant *= -1;
 			scaling.at(i_max) = scaling.at(k);
 		}
 		this->index.push_back(i_max);
@@ -95,15 +100,18 @@ void LUDescomposition<T>::lu(const anpi::Matrix<T> &A, anpi::Matrix<T> &LU){
 }
 
 template<typename T>
-void LUDescomposition<T>::solve(const anpi::Matrix<T> &A, vector<T> &x, const vector<T> &b) {
+inline bool anpi::MatrixDescomposition<T>::solveLU(const Matrix<T>& A,
+		vector<T>& x, const vector<T>& b) {
+	bool result = true;
 	int i, ip, j;
 	int ii = 0;
 	T sum;
-	if(!this->inverseFlag){
+	if(!this->inverseFlag)
 		this->lu(A, this->luMatrix);
-	}
+
 	if(b.size() != this->n)
 		throw runtime_error("The rows dimension is not correct in void LUDescomposition<T>::solve(vector<T>& b, vector<T>& x)");
+
 	x = b;
 	for(i = 0; i < this->n; i++){
 		ip = this->index.at(i);
@@ -122,10 +130,12 @@ void LUDescomposition<T>::solve(const anpi::Matrix<T> &A, vector<T> &x, const ve
 			sum -= this->luMatrix[i][j]*x.at(j);
 		x.at(i) = sum/(this->luMatrix[i][i]);
 	}
+	return result;
 }
 
 template<typename T>
-void LUDescomposition<T>::inverse(const anpi::Matrix<T> &A, anpi::Matrix<T>& Ai) {
+inline void anpi::MatrixDescomposition<T>::inverse(const Matrix<T>& A,
+		Matrix<T>& Ai) {
 	this->lu(A,this->luMatrix);
 	this->inverseFlag = true;
 	Ai = anpi::Matrix<T>(this->n, this->n, T(0));
@@ -137,8 +147,8 @@ void LUDescomposition<T>::inverse(const anpi::Matrix<T> &A, anpi::Matrix<T>& Ai)
 }
 
 template<typename T>
-void LUDescomposition<T>::inverse_aux(const anpi::Matrix<T>& B,
-		anpi::Matrix<T>& X) {
+inline void anpi::MatrixDescomposition<T>::inverse_aux(const Matrix<T>& B,
+		Matrix<T>& X) {
 	int i, j;
 	int m = B.cols();
 	if(B.rows() != this->n || X.rows() != this->n || B.cols() != X.cols()){
@@ -149,10 +159,10 @@ void LUDescomposition<T>::inverse_aux(const anpi::Matrix<T>& B,
 		tmp.clear();
 		for(i = 0; i < this->n; i++)
 			tmp.push_back(B[i][j]);
-		this->solve(B, tmp, tmp);
+		this->solveLU(B, tmp, tmp);
 		for(i = 0; i < this->n; i++)
 			X[i][j] = tmp.at(i);
 	}
 }
 
-#endif /* DESCOMPOSITION_LUDESCOMPOSITION_H_ */
+#endif /* DESCOMPOSITION_MATRIXDESCOMPOSITION_H_ */
