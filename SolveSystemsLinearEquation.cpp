@@ -14,10 +14,8 @@
 
 #include <cstdlib>
 
-#include "Descomposition/LUDescomposition.h"
 #include "Descomposition/TestDescomposition.h"
 #include "Matrix/Matrix.hpp"
-#include "Descomposition/QRDescomposition.h"
 #include "Descomposition/MatrixDescomposition.h"
 
 
@@ -86,12 +84,9 @@ int main() {
 						{89,8,7,6,5,4},
 						{5,6,8,8,9,8},
 						{65,4,3,3,4,5}};
-	
 	vector<double> x_1;
 	vector<double> b_1 = {{4,7,7,4,7,7}};
-	QRDescomposition<double> * des = new QRDescomposition<double>();
-
-	des->solveQR(A_1,x_1,b_1);
+	d->solveQR(A_1,x_1,b_1);
 	printVector(x_1);
 
 /**

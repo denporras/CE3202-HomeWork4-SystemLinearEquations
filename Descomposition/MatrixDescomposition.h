@@ -27,26 +27,29 @@ public:
 	void lu(const Matrix<T> &A, Matrix<T> &LU);
 	bool solveLU(const Matrix<T> &A, vector<T> &x, const vector<T> &b);
 	void inverse(const Matrix<T> &A ,Matrix<T> &Ai);
-
+	void qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R);
+    bool solveQR(const Matrix<T> &A, vector<T> &x, const vector<T> &b);
 private:
+	Matrix<T> ext_prod(Matrix<T> &a, Matrix<T> &b);
+    Matrix<T> scal_mat(Matrix<T> &a, int b);
+    Matrix<T> transpose(Matrix<T> &a);
 	void inverse_aux(const Matrix<T> &B, Matrix<T> &X);
-
 	bool inverseFlag;
 	int n;
 	vector<T> index;
 	Matrix<double> luMatrix;
 };
 
-} /* namespace anpi */
+
 
 template<typename T>
-inline anpi::MatrixDescomposition<T>::MatrixDescomposition() {
+inline MatrixDescomposition<T>::MatrixDescomposition() {
 	this->n = 0;
 	this->inverseFlag = false;
 }
 
 template<typename T>
-inline void anpi::MatrixDescomposition<T>::lu(const Matrix<T>& A,
+inline void MatrixDescomposition<T>::lu(const Matrix<T>& A,
 		Matrix<T>& LU) {
 	this->n = A.rows();
 	if(this->n != A.cols())
@@ -100,7 +103,7 @@ inline void anpi::MatrixDescomposition<T>::lu(const Matrix<T>& A,
 }
 
 template<typename T>
-inline bool anpi::MatrixDescomposition<T>::solveLU(const Matrix<T>& A,
+inline bool MatrixDescomposition<T>::solveLU(const Matrix<T>& A,
 		vector<T>& x, const vector<T>& b) {
 	bool result = true;
 	int i, ip, j;
@@ -134,7 +137,7 @@ inline bool anpi::MatrixDescomposition<T>::solveLU(const Matrix<T>& A,
 }
 
 template<typename T>
-inline void anpi::MatrixDescomposition<T>::inverse(const Matrix<T>& A,
+inline void MatrixDescomposition<T>::inverse(const Matrix<T>& A,
 		Matrix<T>& Ai) {
 	this->lu(A,this->luMatrix);
 	this->inverseFlag = true;
@@ -147,7 +150,7 @@ inline void anpi::MatrixDescomposition<T>::inverse(const Matrix<T>& A,
 }
 
 template<typename T>
-inline void anpi::MatrixDescomposition<T>::inverse_aux(const Matrix<T>& B,
+inline void MatrixDescomposition<T>::inverse_aux(const Matrix<T>& B,
 		Matrix<T>& X) {
 	int i, j;
 	int m = B.cols();
@@ -165,4 +168,114 @@ inline void anpi::MatrixDescomposition<T>::inverse_aux(const Matrix<T>& B,
 	}
 }
 
+
+template<typename T>
+void MatrixDescomposition<T>::qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
+	int m = A.rows();
+	int n = A.cols();
+    T mag, alpha;
+    T x = 0;
+	Matrix<T> u(m,1,x);
+	Matrix<T> v(m,1,x);
+	Matrix<T> P(m,m,x);
+    for (int i = 0; i<m;++i){
+        P(i,i) = 1;
+    }
+	Matrix<T> I = P;
+    Q = P;
+    R = A;
+    for (int i = 0; i < n; ++i) {         
+        u.fill(x);
+        v.fill(x);
+        mag = 0.0;
+        for (int j = i; j < m; ++j) {
+            u(j,0) = R(j,i);
+            mag += u(j,0) * u(j,0);
+        }
+        mag = sqrt(mag);
+        alpha = u(i,0) < 0 ? mag : -mag;
+        mag = 0.0;
+        for (int j = i; j < m; j++) {
+            v(j,0) = j == i ? u(j,0) + alpha : u(j,0);
+            mag += v(j,0) * v(j,0);
+        }
+        mag = sqrt(mag);
+        if (mag < 0.0000000001) continue;
+        for (int j = i; j < m; j++) v(j,0) /= mag;   
+        Matrix<T> t(1,m,x);
+        for (int j = 0; j < m; ++j){
+            t(0,j) = v(j,0);
+        }
+        Matrix<T> w = ext_prod(v,t);
+        P = I - scal_mat(w,2);
+        R = P*R;
+        Q = Q*P;
+    }
+}
+
+
+template <typename T>
+Matrix<T> MatrixDescomposition<T>::ext_prod(Matrix<T> &a, Matrix<T> &b){
+     Matrix<T> r(a.rows(),b.cols(),1);
+    for(int i = 0; i < a.rows(); i++){
+        for(int j = 0; j < b.cols(); j++)
+            r(i,j) = a(i,0)*b(0,j);
+    }
+    return r;
+}
+
+
+template <typename T>
+Matrix<T> MatrixDescomposition<T>::scal_mat(Matrix<T> &a, int b){
+    for(int i = 0; i < a.rows(); i++){
+        for(int j = 0; j < a.cols(); j++)
+            a(i,j) = a(i,j)*b;
+    }
+    return a;
+}
+
+template <typename T>
+Matrix<T> MatrixDescomposition<T>::transpose(Matrix<T> &a){
+    T x = 0;
+    Matrix<T> r(a.cols(),a.rows(),x);
+    for(int i = 0; i < a.rows(); i++){
+        for(int j = 0; j < a.cols(); j++)
+            r(j,i) = a(i,j);
+    }
+    return r;
+}
+
+
+template <typename T>
+bool MatrixDescomposition<T>::solveQR(const Matrix<T> &A, vector<T> &x, const vector<T> &b){
+    vector<T> bp;
+    Matrix<double> Q;
+    Matrix<double> R;
+    qr(A,Q,R);
+    int n = b.size();
+    for (int i =0; i< n;++i){
+        x.push_back(0);
+    }
+
+    Matrix<double> Qt = transpose(Q);
+    for (int i = 0; i< Qt.rows();++i){
+       bp.push_back(0);
+       for (int j = 0; j<Qt.cols();++j){
+        bp[i] += Qt(i,j) * b[j];
+        }
+    }
+
+    x[n-1] = bp[n-1] / R[n-1][n-1];
+    for (int i = n-2; i >= 0; --i){
+        T sum=bp[i];
+        for (int j = i+1;j < n; ++j){
+            sum -= R[i][j] * x[j];
+        }
+        x[i]=sum / R[i][i];
+    }
+    return 0;
+
+}
+
+} /* namespace anpi */
 #endif /* DESCOMPOSITION_MATRIXDESCOMPOSITION_H_ */
