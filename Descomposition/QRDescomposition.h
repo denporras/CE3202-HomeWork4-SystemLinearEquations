@@ -26,7 +26,6 @@ public:
     bool solveQR(const Matrix<T> &A, vector<T> &x, const vector<T> &b);
 private:
     Matrix<T> ext_prod(Matrix<T> &a, Matrix<T> &b);
-    Matrix<T> mat_prod(Matrix<T> &a, Matrix<T> &b);
     Matrix<T> scal_mat(Matrix<T> &a, int b);
     Matrix<T> transpose(Matrix<T> &a);
     void printMatrix(anpi::Matrix<T> &m);
@@ -75,18 +74,8 @@ void QRDescomposition<T>::qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
         }
         Matrix<T> w = ext_prod(v,t);
         P = I - scal_mat(w,2);
-        printMatrix(P);
-        cout<<endl;
-        printMatrix(R);
-        cout<<endl;
-        Matrix<T> R1=R;
-        R = mat_prod(P,R);
-        printMatrix(R);
-        R1=P*R1;
-         cout<<endl;
-        printMatrix(R1);
-         cout<<endl;
-        Q = mat_prod(Q,P);
+        R = P*R;
+        Q = Q*P;
     }
 }
 
@@ -101,16 +90,6 @@ Matrix<T> QRDescomposition<T>::ext_prod(Matrix<T> &a, Matrix<T> &b){
     return r;
 }
 
-template <typename T>
-Matrix<T> QRDescomposition<T>::mat_prod(Matrix<T> &a, Matrix<T> &b){
-     T x = 0;
-     Matrix<T> r(a.rows(),b.cols(),x);
-     for(int i=0; i<a.rows(); i++)
-        for(int j=0; j<b.cols(); j++)
-            for(int z=0; z<a.rows(); z++)
-                r(i,j) += a(i,z) * b(z,j);
-    return r;
-}
 
 template <typename T>
 Matrix<T> QRDescomposition<T>::scal_mat(Matrix<T> &a, int b){

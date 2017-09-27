@@ -90,8 +90,41 @@ int main() {
 	vector<double> x_1;
 	vector<double> b_1 = {{4,7,7,4,7,7}};
 	QRDescomposition<double> * des = new QRDescomposition<double>();
-	des->solveQR(A,x_1,b_1);
+
+	des->solveQR(A_1,x_1,b_1);
 	printVector(x_1);
+
+/**
+	TestDescomposition<double> * test = new TestDescomposition<double>();
+
+	Matrix<double> M= {{1,1,3},{1,2,4},{4,5,7}};
+
+	Matrix<double> LU= {{0,0,0},{0,0,0},{0,0,0}};
+
+	d->lu(M,LU);
+
+	cout << "LU";
+	printMatrix(LU);
+
+	test->testLU(M,LU);
+
+	cout << "M";
+	printMatrix(M);
+	try{
+			RES = C*D;
+			printMatrix(RES);
+		}
+		catch (const std::exception& error){
+			std::cerr << "Exception: " << error.what() << std::endl;
+		}
+		catch (...){
+
+			std::cerr << "Exception: unknown" << std::endl;
+		}*/
+
+	//printMatrix(Q);
+	//printMatrix(R);*/
+
 	return 0;
 }
 
