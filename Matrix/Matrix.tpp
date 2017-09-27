@@ -5,6 +5,7 @@
  * This file is part of the numerical analysis lecture CE3102 at TEC
  */
 
+#include "MatrixException.hpp"
 
 namespace anpi
 {
@@ -241,5 +242,31 @@ namespace anpi
 
     return c;
   }
+  
+  
+  template<class T>
+    Matrix<T> operator*(const Matrix<T>& a, const Matrix<T>& b) {
+      
+      if(a.cols() != b.rows()){
+    	  throw MatrixException();
+      }
+      
+      Matrix<T> c(a.rows(),b.cols(),Matrix<T>::DoNotInitialize);
+
+      // Multiplying matrix a and b and storing in array mult.
+      for(int i = 0; i < a.rows(); ++i){
+    	  for(int j = 0; j < b.cols(); ++j){
+    		  for(int k = 0; k < a.cols(); ++k)
+    		  {
+    			  c[i][j] += a[i][k] * b[k][j];
+    		  }	
+    	  }
+
+      }
+      
+      return c;
+             
+    }
+  
   
 } // namespace ANPI

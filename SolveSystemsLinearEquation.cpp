@@ -15,8 +15,11 @@
 #include <cstdlib>
 
 #include "Descomposition/LUDescomposition.h"
+#include "Descomposition/TestDescomposition.h"
+#include "Matrix/Matrix.hpp"
 #include "Descomposition/QRDescomposition.h"
 #include "Descomposition/MatrixDescomposition.h"
+
 
 using namespace std;
 using namespace anpi;
@@ -70,7 +73,10 @@ int main() {
 	printMatrix(R);
 	QRDescomposition<double> * des = new QRDescomposition<double>();
 	des->qr(A_1,Q,R);
+<<<<<<< HEAD
 	//printMatrix(Q);
 	//printMatrix(R);*/
 	return 0;
 }
+
+
