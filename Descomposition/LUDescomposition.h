@@ -22,15 +22,13 @@ class LUDescomposition {
 public:
 	LUDescomposition();
 	void lu(const anpi::Matrix<T> &A, anpi::Matrix<T> &LU);
-	void solve(vector<T> &b, vector<T> &x);
-	void solve(anpi::Matrix<T> &b, anpi::Matrix<T> &x);
-	void inverse(anpi::Matrix<T> &AInverse);
-	T getDeterminant();
-	void mprove(vector<T> &b, vector<T> &x);
+	void solve(const anpi::Matrix<T> &A, vector<T> &x, const vector<T> &b);
+	void inverse(const anpi::Matrix<T> &A ,anpi::Matrix<T> &Ai);
 private:
 	int n;
 	vector<T> index;
 	T determinant;
+	anpi::Matrix<double> luMatrix;
 };
 
 template<typename T>
@@ -84,32 +82,44 @@ void LUDescomposition<T>::lu(const anpi::Matrix<T> &A, anpi::Matrix<T> &LU){
 			LU[k][k] = SMALL;
 		for(i = k+1;i < this->n; i++){
 			tmp = LU[i][k] /= LU[k][k];
-			for(j= k+1; i < this->n; i++)
+			for(j= k+1; j < this->n; j++)
 				LU[i][j] -= tmp*LU[k][j];
 		}
 
 	}
-
 }
 
 template<typename T>
-void LUDescomposition<T>::solve(vector<T>& b, vector<T>& x) {
+void LUDescomposition<T>::solve(const anpi::Matrix<T> &A, vector<T> &x, const vector<T> &b) {
+	int i, ip, j;
+	int ii = 0;
+	T sum;
+	this->lu(A, this->luMatrix);
+	if(b.size() != this->n)
+		throw runtime_error("The rows dimension is not correct on void LUDescomposition<T>::solve(vector<T>& b, vector<T>& x)");
+	x = b;
+	for(i = 0; i < this->n; i++){
+		ip = this->index.at(i);
+		sum = x.at(ip);
+		x.at(ip) = x.at(i);
+		if(ii != 0){
+			for(j = ii-1; j < i; j++){
+				sum -= (this->luMatrix[i][j])*(x.at(j));
+			}
+		}else if(abs(sum) > numeric_limits<T>::epsilon())
+			ii = i+1;
+		x.at(i) = sum;
+	}for(i = n-1; i >= 0; i--){
+		sum = x.at(i);
+		for(j = i+1; j < n; j++)
+			sum -= this->luMatrix[i][j]*x.at(j);
+		x.at(i) = sum/(this->luMatrix[i][i]);
+	}
 }
 
 template<typename T>
-void LUDescomposition<T>::solve(anpi::Matrix<T>& b, anpi::Matrix<T>& x) {
-}
+void LUDescomposition<T>::inverse(const anpi::Matrix<T> &A, anpi::Matrix<T>& Ai) {
 
-template<typename T>
-void LUDescomposition<T>::inverse(anpi::Matrix<T>& AInverse) {
-}
-
-template<typename T>
-T LUDescomposition<T>::getDeterminant() {
-}
-
-template<typename T>
-void LUDescomposition<T>::mprove(vector<T>& b, vector<T>& x) {
 }
 
 #endif /* DESCOMPOSITION_LUDESCOMPOSITION_H_ */

@@ -20,21 +20,30 @@ using namespace std;
 using namespace anpi;
 
 template <typename T>
-void printMatrix(Matrix<T> &m){
+void printMatrix(anpi::Matrix<T> &m){
 	for(int i = 0; i < m.rows(); i++){
-		cout << "|";
+		cout << "|\t";
 		for(int j = 0; j < m.cols(); j++)
 			cout << "[" << m[i][j] << "]\t";
 		cout << "|" <<endl;
 	}
 }
 
+template <typename T>
+void printVector(vector<T> &v){
+	cout << "[\t";
+	for(int i = 0; i < v.size(); i++){
+		cout << v.at(i) << "\t";
+	}
+	cout << "]" << endl;
+}
 
 int main() {
-	Matrix<double> A= {{25,5,1},{64,8,1},{144,12,1}};
-	Matrix<double> LU;
+	Matrix<double> A= {{1,1,3},{1,2,4},{4,5,7}};
 	LUDescomposition<double> * d = new LUDescomposition<double>();
-	d->lu(A, LU);
-	printMatrix(LU);
+	vector<double> x;
+	vector<double> b = {{7,11,20}};
+	d->solve(A, x, b);
+	printVector(x);
 	return 0;
 }
