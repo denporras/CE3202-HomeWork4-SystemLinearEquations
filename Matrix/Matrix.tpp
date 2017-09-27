@@ -247,17 +247,18 @@ namespace anpi
   template<class T>
   Matrix<T> operator*(const Matrix<T>& a, const Matrix<T>& b) {
 
+	  Matrix<T> c(a.rows(),b.cols(),T(0));
 	  if(a.cols() != b.rows()){
 		  throw MatrixException();
 	  }
 	  else{
 
-		  Matrix<T> c(a.rows(),b.cols(),0);
+		  
 
 		  // Multiplying matrix a and b and storing in array mult.
-		  for(int i = 0; i < a.rows(); ++i){
-			  for(int j = 0; j < b.cols(); ++j){
-				  for(int k = 0; k < a.cols(); ++k)
+		  for(int i = 0; i < a.rows(); i++){
+			  for(int j = 0; j < b.cols(); j++){
+				  for(int k = 0; k < a.rows(); k++)
 				  {
 					  c[i][j] += a[i][k] * b[k][j];
 				  }	
