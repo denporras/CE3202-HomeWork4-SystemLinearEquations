@@ -15,7 +15,7 @@ template<typename T>
 class TestDescomposition {
 public:
 	TestDescomposition();
-	T testLU(const anpi::Matrix<T> &A, anpi::Matrix<T> &LU);
+	T testLU(anpi::Matrix<T> &A, anpi::Matrix<T> &LU);
 	T testQR(const anpi::Matrix<T> &A, anpi::Matrix<T> &Q,anpi::Matrix<T> &R);
 
 private:
@@ -28,11 +28,11 @@ TestDescomposition<T>::TestDescomposition() {
 }
 
 template<typename T>
-T TestDescomposition<T>::testLU(const anpi::Matrix<T> &A, anpi::Matrix<T> &LU){
-	anpi::Matrix<T> LT(LU.rows(),LU.cols(),0);
-	anpi::Matrix<T> UT(LU.rows(),LU.cols(),0);
+T TestDescomposition<T>::testLU(anpi::Matrix<T> &A, anpi::Matrix<T> &LU){
+	anpi::Matrix<T> LT(LU.rows(),LU.cols(),T(0));
+	anpi::Matrix<T> UT(LU.rows(),LU.cols(),T(0));
 	this->getUpperLowerTringular(LU,UT,LT);
-	//A = LT*UT;
+	A = LT*UT;
 }
 
 template<typename T>

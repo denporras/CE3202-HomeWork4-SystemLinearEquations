@@ -59,6 +59,20 @@ int main() {
 	printMatrix(R);
 
 	TestDescomposition<double> * test = new TestDescomposition<double>();
+
+	Matrix<double> M= {{1,1,3},{1,2,4},{4,5,7}};
+
+	Matrix<double> LU= {{0,0,0},{0,0,0},{0,0,0}};
+
+	d->lu(M,LU);
+
+	cout << "LU";
+	printMatrix(LU);
+
+	test->testLU(M,LU);
+
+	cout << "M";
+	printMatrix(M);
 	/*try{
 			RES = C*D;
 			printMatrix(RES);
