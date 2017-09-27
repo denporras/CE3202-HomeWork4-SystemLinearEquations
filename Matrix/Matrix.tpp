@@ -266,18 +266,6 @@ namespace anpi
       
       return c;
              
-      /*Matrix<T> c(a.rows(),a.cols(),Matrix<T>::DoNotInitialize);
-      T* cptr        = c.data();
-      T *const end   = cptr + a.entries();
-
-      const T* aptr = a.data();
-      const T* bptr = b.data();
-
-      for (;cptr!=end;) {
-        *cptr++ = *aptr++ + *bptr++;
-      }
-
-      return c;*/
     }
   
   

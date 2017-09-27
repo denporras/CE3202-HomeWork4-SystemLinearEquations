@@ -15,6 +15,7 @@
 #include <cstdlib>
 
 #include "Descomposition/LUDescomposition.h"
+#include "Descomposition/TestDescomposition.h"
 #include "Matrix/Matrix.hpp"
 
 using namespace std;
@@ -38,11 +39,22 @@ int main()
 	Matrix<double> C= {{1,2,3}};
 	Matrix<double> D= {{1,2},{1,2},{4,4}};
 
-    Matrix<double> RES(C.rows(),D.cols(),1);
-    //printMatrix(RES);
+	Matrix<double> RES(C.rows(),D.cols(),1);
 
 
-	try{
+	Matrix<double> M= {{25,5,1},{64,8,1},{144,12,1}};
+	Matrix<double> LT(A.rows(),A.cols(),double(0));
+	Matrix<double> UT(A.rows(),A.cols(),double(0));
+
+	TestDescomposition<double> * test = new TestDescomposition<double>();
+	test->getUpperLowerTringular(M,UT,LT);
+
+	cout << "Upper";
+	printMatrix(UT);
+	cout << "Lower";
+	printMatrix(LT);
+
+	/*try{
 		RES = C*D;
 		printMatrix(RES);
 	}
@@ -52,7 +64,7 @@ int main()
 	catch (...){
 
 		std::cerr << "Exception: unknown" << std::endl;
-	}
+	}*/
 
 	return 0;
 }

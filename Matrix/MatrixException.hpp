@@ -24,20 +24,5 @@ public:
 	}
 };
 
-/*int main()
-{
-	try{
-		throw MatrixException();
-	}
-	catch (const std::exception& error){
-		std::cerr << "Exception: " << error.what() << std::endl;
-	}
-	catch (...){
-
-		std::cerr << "Exception: unknown" << std::endl;
-	}
-
-	return 0;
-}*/
 
 #endif /* MATRIX_MATRIXEXCEPTION_HPP_ */
