@@ -15,6 +15,7 @@
 #include <cstdlib>
 
 #include "Descomposition/LUDescomposition.h"
+#include "Matrix/Matrix.hpp"
 
 using namespace std;
 using namespace anpi;
@@ -29,12 +30,38 @@ void printMatrix(Matrix<T> &m){
 	}
 }
 
+int main()
+{
+	Matrix<double> A= {{25,5,1},{64,8,1},{144,12,1}};
+	Matrix<double> B= {{25,5,1},{64,8,1},{144,12,1}};
 
-int main() {
+	Matrix<double> C= {{1,2,3}};
+	Matrix<double> D= {{1,2},{1,2},{4,4}};
+
+    Matrix<double> RES(C.rows(),D.cols(),1);
+    //printMatrix(RES);
+
+
+	try{
+		RES = C*D;
+		printMatrix(RES);
+	}
+	catch (const std::exception& error){
+		std::cerr << "Exception: " << error.what() << std::endl;
+	}
+	catch (...){
+
+		std::cerr << "Exception: unknown" << std::endl;
+	}
+
+	return 0;
+}
+
+/*int main() {
 	Matrix<double> A= {{25,5,1},{64,8,1},{144,12,1}};
 	Matrix<double> LU;
 	LUDescomposition<double> * d = new LUDescomposition<double>();
 	d->lu(A, LU);
 	printMatrix(LU);
 	return 0;
-}
+}*/
