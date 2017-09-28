@@ -22,6 +22,69 @@
 using namespace std;
 using namespace anpi;
 
+
+
+template<class T>
+void setUp(int m, int f, int s) {
+
+	//Matrix
+	Matrix<T> M_s;//Selected M
+	Matrix<T> LU;
+	Matrix<T> Q;
+	Matrix<T> R;
+	Matrix<T> Mi;
+
+	Matrix<T> M_1 = {{1,1,3},   //Normal 1
+					 {1,2,4},
+					 {4,5,7}};
+
+	Matrix<T> M_2 = {{8,14,3},  //Normal 2
+					 {3,2,7},
+					 {6,1,9}};
+
+	Matrix<T> M_3= {{1,0.01},   //Mal cond 1
+					{0.99,1}};
+
+	Matrix<T> M_4= {{4,  5 },   //Mal cond 2
+					{4.1,5}};
+
+	Matrix<T> M_5= {{1,1,1},    //Non invertible
+					{1,1,1},
+					{1,1,1}};
+
+
+	//Equation systems
+	vector<T> x; //Result vector
+	vector<T> A_s;//Selected A
+	vector<T> b_s;//Selected b
+
+	Matrix<T> A_1= {{1,1,3},
+					{1,2,4},
+					{4,5,7}};
+
+	vector<T> b_1 = {{7,11,20}};
+
+	Matrix<T> A_2 = {{1,0,5,7,0,7},
+					{3,3,44,6,8,8},
+					{6,4,3,3,4,6 },
+					{89,8,7,6,5,4},
+					{5,6,8,8,9,8 },
+					{65,4,3,3,4,5}};
+
+	vector<T> b_2 = {{4,7,7,4,7,7}};
+
+	Matrix<T> A_3= {{2,1,3,5  }, //Wrong dimensions
+					{-1,0,7,1 },
+					{0,-1,-1,3},
+					{-3,7,4,3 },
+					{1,6,4,-3 }};
+
+	vector<T> b_3 = {{7,11,20}};
+
+
+}
+
+
 template <typename T>
 void printMatrix(anpi::Matrix<T> &m){
 	for(int i = 0; i < m.rows(); i++){
@@ -80,9 +143,9 @@ int main() {
 
 
 	if (p == 1) {
-//		setUp<float>(m, f, s);
+		setUp<float>(m, f, s);
 	} else if (p == 2) {
-	//	setUp<double>(m, f ,s);
+		setUp<double>(m, f ,s);
 	}
 
 
@@ -161,16 +224,12 @@ int main() {
 
 
 	/*try{
-			RES = C*D;
-			printMatrix(RES);
+			a = b*c;
 		}
 		catch (const std::exception& error){
 			std::cerr << "Exception: " << error.what() << std::endl;
-		}
-		catch (...){
-
-			std::cerr << "Exception: unknown" << std::endl;
 		}*/
+
 
 
 
