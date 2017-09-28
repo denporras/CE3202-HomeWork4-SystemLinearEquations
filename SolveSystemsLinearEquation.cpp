@@ -41,7 +41,53 @@ void printVector(vector<T> &v){
 	cout << "]" << endl;
 }
 
+void setUp(int m, int f, int s) {
+
+}
+
+
 int main() {
+
+
+	int f, p, m,s;
+
+
+	cout << "Choose a number (1,2) to select the precision:" << endl
+			<< "1. Float" << endl << "2. Double" << endl;
+	cin >> p;
+
+	cout << "Choose a number (1,2,3,4,5,6,7) to select the function:" << endl;
+	cout << "1. lu" << endl;
+	cout << "2. qr" << endl;
+	cout << "3. testLU" << endl;
+	cout << "4. testQR" << endl;
+	cout << "5. solveLU" << endl;
+	cout << "6. solveQR" << endl;
+	cout << "7. invert" << endl;
+	cin >> f;
+
+	if(f == 5 or f == 6){
+		cout << "Choose a number (1,2,3) to select the option Ax = b system: (see README)" << endl;
+		cin >> s;
+
+	}
+	else{
+		cout << "Choose a number (1,2,3,4,5) to select the matrix: (see README)" << endl;
+		cin >> m;
+	}
+
+
+
+
+	if (p == 1) {
+//		setUp<float>(m, f, s);
+	} else if (p == 2) {
+	//	setUp<double>(m, f ,s);
+	}
+
+
+
+
 /**
 	Matrix<double> A= {{1,1,3},{1,2,4},{4,5,7}};
 	vector<double> x;
@@ -58,7 +104,9 @@ int main() {
 	des->solveQR(A,x_1,b_1);
 	printVector(x_1);
 */
-	Matrix<double> A = {{1,0,5,7,0,7},
+
+
+/*	Matrix<double> A = {{1,0,5,7,0,7},
 						{3,3,44,6,8,8},
 						{6,4,3,3,4,6},
 						{89,8,7,6,5,4},
@@ -87,25 +135,32 @@ int main() {
 	vector<double> x_1;
 	vector<double> b_1 = {{4,7,7,4,7,7}};
 	d->solveQR(A_1,x_1,b_1);
-	printVector(x_1);
+	printVector(x_1);*/
 
-/**
+	/*
+
 	TestDescomposition<double> * test = new TestDescomposition<double>();
 
 	Matrix<double> M= {{1,1,3},{1,2,4},{4,5,7}};
 
 	Matrix<double> LU= {{0,0,0},{0,0,0},{0,0,0}};
 
+	MatrixDescomposition<double> * d = new MatrixDescomposition<double>();
 	d->lu(M,LU);
 
-	cout << "LU";
+	cout << "LU"<<endl;
 	printMatrix(LU);
 
-	test->testLU(M,LU);
+	double err = test->testLU(M,LU);
 
-	cout << "M";
+	cout << "M"<<endl;
 	printMatrix(M);
-	try{
+
+	cout << "err"<<endl;
+	cout << err<<endl;*/
+
+
+	/*try{
 			RES = C*D;
 			printMatrix(RES);
 		}
@@ -117,8 +172,7 @@ int main() {
 			std::cerr << "Exception: unknown" << std::endl;
 		}*/
 
-	//printMatrix(Q);
-	//printMatrix(R);*/
+
 
 	return 0;
 }
