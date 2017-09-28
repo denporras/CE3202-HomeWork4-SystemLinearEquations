@@ -6,6 +6,8 @@
  */
 
 #include "MatrixException.hpp"
+#include <gtest/gtest.h>
+
 
 namespace anpi
 {
@@ -248,12 +250,13 @@ namespace anpi
   Matrix<T> operator*(const Matrix<T>& a, const Matrix<T>& b) {
 
 	  Matrix<T> c(a.rows(),b.cols(),T(0));
+	  ASSERT_EQ(a.cols(),b.rows());  //Right dimensions
+	  
 	  if(a.cols() != b.rows()){
 		  throw MatrixException();
+		  
 	  }
 	  else{
-
-		  
 
 		  // Multiplying matrix a and b and storing in array mult.
 		  for(int i = 0; i < a.rows(); i++){
