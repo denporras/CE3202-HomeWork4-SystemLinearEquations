@@ -36,7 +36,7 @@ private:
 	bool inverseFlag;
 	int n;
 	vector<T> index;
-	Matrix<double> luMatrix;
+	Matrix<T> luMatrix;
 };
 
 
@@ -291,15 +291,15 @@ bool MatrixDescomposition<T>::solveQR(const Matrix<T> &A, vector<T> &x, const ve
 		throw runtime_error("The rows dimension is not correct in void solveQR(const Matrix<T> &A, vector<T> &x, const vector<T> &b)");
 
     vector<T> bp;
-    Matrix<double> Q;
-    Matrix<double> R;
+    Matrix<T> Q;
+    Matrix<T> R;
     qr(A,Q,R);
     int n = b.size();
     for (int i =0; i< n;++i){
         x.push_back(0);
     }
 
-    Matrix<double> Qt = transpose(Q);
+    Matrix<T> Qt = transpose(Q);
     for (int i = 0; i< Qt.rows();++i){
        bp.push_back(0);
        for (int j = 0; j<Qt.cols();++j){

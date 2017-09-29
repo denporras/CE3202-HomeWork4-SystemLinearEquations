@@ -250,7 +250,6 @@ namespace anpi
   Matrix<T> operator*(const Matrix<T>& a, const Matrix<T>& b) {
 
 	  Matrix<T> c(a.rows(),b.cols(),T(0));
-	  ASSERT_EQ(a.cols(),b.rows());  //Right dimensions
 	  
 	  if(a.cols() != b.rows()){
 		  throw MatrixException();

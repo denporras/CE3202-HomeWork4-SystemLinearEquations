@@ -1,0 +1,3 @@
+/home/kevin/programacion/c++/CE3202-HomeWork4-SystemLinearEquations/src/CMakeFiles/edit_cache.dir
+/home/kevin/programacion/c++/CE3202-HomeWork4-SystemLinearEquations/src/CMakeFiles/rebuild_cache.dir
+/home/kevin/programacion/c++/CE3202-HomeWork4-SystemLinearEquations/src/CMakeFiles/runTests.dir

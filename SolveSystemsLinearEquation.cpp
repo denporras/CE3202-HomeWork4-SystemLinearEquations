@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : Resolucion de Sistemas de Ecuacione Lineales
-// Author      : Kelvin Alfaro Vega, Dennis Porras Barrantes, David Gómez Vargas
+// Author      : Kevin Alfaro Vega, Dennia Porras Barrantes, David Gómez Vargas
 // Version     : 1.0
 // Copyright   : Assignment for the course Numerical Analysis of the Costa Rica Institute of Technology
 // Description : Program that solves systems of linear equations.
@@ -15,24 +15,50 @@
 #include <cstdlib>
 
 #include "Descomposition/TestDescomposition.h"
-#include "Matrix/Matrix.hpp"
 #include "Descomposition/MatrixDescomposition.h"
-
+#include <gtest/gtest.h>
+#include "Matrix/Matrix.hpp"
 
 using namespace std;
 using namespace anpi;
 
 
+/**
+ * @brief Print a matrix
+ * @param m: Matrix to print
+ */
+template <typename T>
+void printMatrix(anpi::Matrix<T> &m){
+	for(int i = 0; i < m.rows(); i++){
+		cout << "|\t";
+		for(int j = 0; j < m.cols(); j++)
+			cout << "[" << m[i][j] << "]\t";
+		cout << "|" <<endl;
+	}
+}
+
+/**
+ * @brief Print a vector
+ * @param v: Vector to print
+ */
+template <typename T>
+void printVector(vector<T> &v){
+	cout << "[\t";
+	for(int i = 0; i < v.size(); i++){
+		cout << v.at(i) << "\t";
+	}
+	cout << "]" << endl;
+}
 
 template<class T>
 void setUp(int m, int f, int s) {
 
 	//Matrix
 	Matrix<T> M_s;//Selected M
-	Matrix<T> LU;
 	Matrix<T> Q;
 	Matrix<T> R;
 	Matrix<T> Mi;
+	Matrix<T> LU;
 
 	Matrix<T> M_1 = {{1,1,3},   //Normal 1
 					 {1,2,4},
@@ -55,7 +81,7 @@ void setUp(int m, int f, int s) {
 
 	//Equation systems
 	vector<T> x; //Result vector
-	vector<T> A_s;//Selected A
+	Matrix<T> A_s;//Selected A
 	vector<T> b_s;//Selected b
 
 	Matrix<T> A_1= {{1,1,3},
@@ -80,32 +106,117 @@ void setUp(int m, int f, int s) {
 					{1,6,4,-3 }};
 
 	vector<T> b_3 = {{7,11,20}};
+	T norm;
 
+	//Select equation system
+	switch(s){
+	case 1:
+		A_s = A_1;
+		b_s = b_1;
 
-}
+		break;
+	case 2:
+		A_s = A_2;
+		b_s = b_2;
+		break;
+	case 3:
+		A_s = A_3;
+		b_s = b_3;
+		break;
+	default:
+		A_s = A_1;
+		b_s = b_1;
 
-
-template <typename T>
-void printMatrix(anpi::Matrix<T> &m){
-	for(int i = 0; i < m.rows(); i++){
-		cout << "|\t";
-		for(int j = 0; j < m.cols(); j++)
-			cout << "[" << m[i][j] << "]\t";
-		cout << "|" <<endl;
 	}
-}
 
-template <typename T>
-void printVector(vector<T> &v){
-	cout << "[\t";
-	for(int i = 0; i < v.size(); i++){
-		cout << v.at(i) << "\t";
+	//Select matrix
+	switch(m){
+	case 1:
+		M_s = M_1;
+
+		break;
+	case 2:
+		M_s = M_2;
+		break;
+	case 3:
+		M_s = M_3;
+		break;
+	case 4:
+		M_s = M_4;
+		break;
+	case 5:
+		M_s = M_5;
+		break;
+	default:
+		M_s = M_1;
+
 	}
-	cout << "]" << endl;
-}
 
-void setUp(int m, int f, int s) {
+	MatrixDescomposition<T> * d = new MatrixDescomposition<T>();
+	TestDescomposition<T> * test = new TestDescomposition<T>();
 
+	//Select function
+	switch(f){
+	case 1://lu
+
+		d->lu(M_s,LU);
+		cout << "LU Matrix" << endl;
+		printMatrix(LU);
+
+		break;
+	case 2: //qr
+		d->qr(M_s,Q,R);
+		cout << "Q Matrix" << endl;
+		printMatrix(Q);
+		cout << "R Matrix" << endl;
+		printMatrix(R);
+
+		break;
+	case 3: //testLU
+
+		d->lu(M_s,LU);
+		norm = test->testLU(M_s,LU);
+
+		cout << "Norm of difference between original matrix and reconstructed-from-LU matrix:"<<endl;
+		cout << norm <<endl;
+
+		break;
+	case 4: //testQR
+
+		d->lu(M_s,LU);
+		norm = test->testQR(M_s,Q,R);
+
+		cout << "Norm of difference between original matrix and reconstructed-from-QR matrix:"<<endl;
+		cout << norm <<endl;
+
+
+		break;
+	case 5: //solveLU
+
+		d->solveLU(A_s,x,b_s);
+		cout << "Vector x (solution)" << endl;
+		printVector(x);
+
+
+		break;
+	case 6: //solveQR
+
+		d->solveQR(A_s,x,b_s);
+		cout << "Vector x (solution)" << endl;
+		printVector(x);
+
+			break;
+	case 7: //invert
+		d->inverse(M_s,Mi);
+		cout << "Inverted matrix" << endl;
+		printMatrix(Mi);
+
+			break;
+	default:
+		d->lu(M_s,LU);
+		cout << "LU Matrix" << endl;
+		printMatrix(LU);
+	}
 }
 
 
@@ -139,101 +250,14 @@ int main() {
 		cin >> m;
 	}
 
-
-
-
 	if (p == 1) {
 		setUp<float>(m, f, s);
 	} else if (p == 2) {
 		setUp<double>(m, f ,s);
 	}
 
-
-
-
-/**
-	Matrix<double> A= {{1,1,3},{1,2,4},{4,5,7}};
-	vector<double> x;
-	vector<double> b = {{7,11,20}};
-	LUDescomposition<double> * d = new LUDescomposition<double>();
-	d->solve(A, x, b);
-	printVector(x);
-
-	vector<double> x_1;
-	vector<double> b_1 = {{7,11,20}};
-	Matrix<double> A_1= {{2, 1, 3, 5},{-1, 0, 7, 1},{0, -1, -1, 3},{-3, 7, 4, 3},{1, 6, 4, -3}};
-	QRDescomposition<double> * des = new QRDescomposition<double>();
-	//des->qr(A_1,Q,R);
-	des->solveQR(A,x_1,b_1);
-	printVector(x_1);
-*/
-
-
-/*	Matrix<double> A = {{1,0,5,7,0,7},
-						{3,3,44,6,8,8},
-						{6,4,3,3,4,6},
-						{89,8,7,6,5,4},
-						{5,6,8,8,9,8},
-						{65,4,3,3,4,5}};
-	vector<double> x;
-	vector<double> b = {{4,7,7,4,7,7}};
-	MatrixDescomposition<double> * d = new MatrixDescomposition<double>();
-	d->solveLU(A, x, b);
-	printVector(x);
-
-	cout << endl;
-
-	Matrix<double> M = {{5,6,4},
-						{5,8,8},
-						{5,1,3}};
-	Matrix<double> Mi;
-	d->inverse(M, Mi);
-	//printMatrix(Mi);
-	Matrix<double> A_1= {{1,0,5,7,0,7},
-						{3,3,44,6,8,8},
-						{6,4,3,3,4,6},
-						{89,8,7,6,5,4},
-						{5,6,8,8,9,8},
-						{65,4,3,3,4,5}};
-	vector<double> x_1;
-	vector<double> b_1 = {{4,7,7,4,7,7}};
-	d->solveQR(A_1,x_1,b_1);
-	printVector(x_1);*/
-
-	/*
-
-	TestDescomposition<double> * test = new TestDescomposition<double>();
-
-	Matrix<double> M= {{1,1,3},{1,2,4},{4,5,7}};
-
-	Matrix<double> LU= {{0,0,0},{0,0,0},{0,0,0}};
-
-	MatrixDescomposition<double> * d = new MatrixDescomposition<double>();
-	d->lu(M,LU);
-
-	cout << "LU"<<endl;
-	printMatrix(LU);
-
-	double err = test->testLU(M,LU);
-
-	cout << "M"<<endl;
-	printMatrix(M);
-
-	cout << "err"<<endl;
-	cout << err<<endl;*/
-
-
-	/*try{
-			a = b*c;
-		}
-		catch (const std::exception& error){
-			std::cerr << "Exception: " << error.what() << std::endl;
-		}*/
-
-
-
-
 	return 0;
 }
+
 
 
