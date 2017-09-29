@@ -1,6 +1,28 @@
+Como Framework de pruebas unitarias se empleo GTest de Google.
+
 Instrucciones:
 
+Instalar GTest: Seguir los siguientes comandos
 
+	sudo apt-get install libgtest-dev
+	sudo apt-get install cmake # install cmake
+	cd /usr/src/gtest
+	sudo cmake CMakeLists.txt
+	sudo make
+	sudo cp *.a /usr/lib
+
+Para compilar el programa con cmake, correr en terminal:
+	cmake CMakeLists.txt
+	make
+
+Para correr las pruebas unitarias ejecutar en terminal:
+	./runTests
+Para correr el programa y probar las funciones ejecutar en terminal: 
+	./tarea
+	
+Seguir las instrucciones que indica el programa, las matrices correspondiente a cada numero estan acontinuacion.
+
+*******************IMPORTANTE, MATRICES CON SU NUMERO Y DESCRIPCION******************
 Matrices:
 
 1. 	|4,5,7|     	MATRIZ NORMAL
