@@ -1,23 +1,22 @@
 /*
- * MatrixDescomposition.h
- *
- *  Created on: 27 sept. 2017
- *      Author: dennis
+ * @file MatrixDescomposition.h
+ * @brief Class that implements the brent method to find equations solutions.
+ * @author Daedgomez and Denporras
+ * @date 28 de sep. de 2017
  */
+
 
 #ifndef DESCOMPOSITION_MATRIXDESCOMPOSITION_H_
 #define DESCOMPOSITION_MATRIXDESCOMPOSITION_H_
 
-#include <iostream>
-#include <cmath>
+#include <iostream>	//Inputs and outputs of text
+#include <cmath>	//Math operations
 #include <limits>
-#include <vector>
+#include <vector>	//vector 
 #include <stdexcept>
-
 #include "../Matrix/Matrix.hpp"
 
 using namespace std;
-
 namespace anpi {
 
 template<typename T>
@@ -168,11 +167,29 @@ inline void MatrixDescomposition<T>::inverse_aux(const Matrix<T>& B,
 	}
 }
 
-
+/**
+ * @brief QR Descomposition method
+ * @param A original matrix that is going to be descomposed
+ * @param Q orthogonal matrix
+ * @param R upper triangular matrix
+ */
 template<typename T>
 void MatrixDescomposition<T>::qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R){
 	int m = A.rows();
 	int n = A.cols();
+	if(n != m)
+		throw runtime_error("'A' matrix is not square in method: void qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R)");
+	T big, tmp;
+	for(int i = 0; i < n; i++){
+		big = T(0);
+		for(int j = 0; j < n; j++){
+			if((tmp = abs(A[i][j])) > big)
+				big = tmp;
+		}
+		if(abs(big) < numeric_limits<T>::epsilon()){
+			throw runtime_error("Singular matrix in method: void qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R)");
+		}
+	}
     T mag, alpha;
     T x = 0;
 	Matrix<T> u(m,1,x);
@@ -208,12 +225,21 @@ void MatrixDescomposition<T>::qr(const Matrix<T>& A, Matrix<T>& Q, Matrix<T>& R)
         }
         Matrix<T> w = ext_prod(v,t);
         P = I - scal_mat(w,2);
-        R = P*R;
-        Q = Q*P;
+        try{
+        	R = P*R;
+        	Q = Q*P;
+        } catch(const exception& error){
+        	cerr << "Exception: " << error.what() << endl;
+        }
+        
     }
 }
 
-
+/**
+ * @brief External product of matrices
+ * @param a First product matrix
+ * @param b Second product matrix
+ */
 template <typename T>
 Matrix<T> MatrixDescomposition<T>::ext_prod(Matrix<T> &a, Matrix<T> &b){
      Matrix<T> r(a.rows(),b.cols(),1);
@@ -224,7 +250,11 @@ Matrix<T> MatrixDescomposition<T>::ext_prod(Matrix<T> &a, Matrix<T> &b){
     return r;
 }
 
-
+/**
+ * @brief Scalar product of matrices
+ * @param a Matrix to be scale
+ * @param b number to scale
+ */
 template <typename T>
 Matrix<T> MatrixDescomposition<T>::scal_mat(Matrix<T> &a, int b){
     for(int i = 0; i < a.rows(); i++){
@@ -234,6 +264,10 @@ Matrix<T> MatrixDescomposition<T>::scal_mat(Matrix<T> &a, int b){
     return a;
 }
 
+/**
+ * @brief Computes the transposed matrix
+ * @param a Matrix to be transpose
+ */
 template <typename T>
 Matrix<T> MatrixDescomposition<T>::transpose(Matrix<T> &a){
     T x = 0;
@@ -245,9 +279,17 @@ Matrix<T> MatrixDescomposition<T>::transpose(Matrix<T> &a){
     return r;
 }
 
-
+/**
+ * @brief Constructor of the method
+ * @param A original matrix that is going to be descomposed
+ * @param x vector os variables
+ * @param b vector of constants
+ */
 template <typename T>
 bool MatrixDescomposition<T>::solveQR(const Matrix<T> &A, vector<T> &x, const vector<T> &b){
+	if(b.size() != A.rows())
+		throw runtime_error("The rows dimension is not correct in void solveQR(const Matrix<T> &A, vector<T> &x, const vector<T> &b)");
+
     vector<T> bp;
     Matrix<double> Q;
     Matrix<double> R;
