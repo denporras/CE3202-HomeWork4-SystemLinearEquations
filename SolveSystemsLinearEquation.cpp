@@ -60,13 +60,9 @@ void setUp(int m, int f, int s) {
 	Matrix<T> Mi;
 	Matrix<T> LU;
 
-	Matrix<T> M_1 = {{1,1,3},   //Normal 1
-					 {1,2,4},
-					 {4,5,7}};
+	Matrix<T> M_1 = {{4,5,7},{1,2,4},{1,1,3}};   //Normal 1
 
-	Matrix<T> M_2 = {{8,14,3},  //Normal 2
-					 {3,2,7},
-					 {6,1,9}};
+	Matrix<T> M_2 = {{6,1,9}, {8,14,3}, {3,2,7}};  //Normal 2
 
 	Matrix<T> M_3= {{1,0.01},   //Mal cond 1
 					{0.99,1}};
