@@ -16,7 +16,6 @@
 
 #include "Descomposition/TestDescomposition.h"
 #include "Descomposition/MatrixDescomposition.h"
-#include <gtest/gtest.h>
 #include "Matrix/Matrix.hpp"
 
 using namespace std;
@@ -67,12 +66,12 @@ void setUp(int m, int f, int s) {
 	Matrix<T> M_3= {{1,0.01},   //Mal cond 1
 					{0.99,1}};
 
-	Matrix<T> M_4= {{4,  5 },   //Mal cond 2
-					{4.1,5}};
+	Matrix<T> M_4= {{4.1,5 },   //Mal cond 2
+					{4, 5 }};
 
-	Matrix<T> M_5= {{1,1,1},    //Non invertible
-					{1,1,1},
-					{1,1,1}};
+	Matrix<T> M_5= {{0,0,0},    //Non invertible
+					{0,0,0},
+					{0,0,0}};
 
 
 	//Equation systems
@@ -179,7 +178,7 @@ void setUp(int m, int f, int s) {
 		break;
 	case 4: //testQR
 
-		d->lu(M_s,LU);
+		d->qr(M_s,Q,R);
 		norm = test->testQR(M_s,Q,R);
 
 		cout << "Norm of difference between original matrix and reconstructed-from-QR matrix:"<<endl;

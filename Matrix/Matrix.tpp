@@ -6,7 +6,6 @@
  */
 
 #include "MatrixException.hpp"
-#include <gtest/gtest.h>
 
 
 namespace anpi
