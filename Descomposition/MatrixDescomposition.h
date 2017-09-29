@@ -1,6 +1,6 @@
-/*
+/**
  * @file MatrixDescomposition.h
- * @brief Class that implements the brent method to find equations solutions.
+ * @brief Class that implements decomposition of matrix method to find equations solutions.
  * @author Daedgomez and Denporras
  * @date 28 de sep. de 2017
  */
@@ -40,13 +40,20 @@ private:
 };
 
 
-
+/**
+ * @brief Constructor of the class that initialize some variables.
+ */
 template<typename T>
 inline MatrixDescomposition<T>::MatrixDescomposition() {
 	this->n = 0;
 	this->inverseFlag = false;
 }
 
+/**
+ * @brief Method that take the references of the matrix and calculates LU descomposition.
+ * @param A Matrix.
+ * @param LU Decomposition of A.
+ */
 template<typename T>
 inline void MatrixDescomposition<T>::lu(const Matrix<T>& A,
 		Matrix<T>& LU) {
@@ -101,6 +108,13 @@ inline void MatrixDescomposition<T>::lu(const Matrix<T>& A,
 	}
 }
 
+/**
+ * @brief Solves an systems of linear equations by LU decomposition.
+ * @param A Matrix.
+ * @param x Vector variables.
+ * @param b Right side vector.
+ * @return true if the method could solve.
+ */
 template<typename T>
 inline bool MatrixDescomposition<T>::solveLU(const Matrix<T>& A,
 		vector<T>& x, const vector<T>& b) {
@@ -135,6 +149,11 @@ inline bool MatrixDescomposition<T>::solveLU(const Matrix<T>& A,
 	return result;
 }
 
+/**
+ * @brief Method that calculates the inverse of A Matrix.
+ * @param A Matrix.
+ * @param Ai Inverse of the A matrix.
+ */
 template<typename T>
 inline void MatrixDescomposition<T>::inverse(const Matrix<T>& A,
 		Matrix<T>& Ai) {
@@ -148,6 +167,11 @@ inline void MatrixDescomposition<T>::inverse(const Matrix<T>& A,
 	this->inverseFlag = false;
 }
 
+/**
+ * @brief Auxiliary method that calculates the inverse by using LU descomposition.
+ * @param B Identity matrix.
+ * @param X Inverse of A.
+ */
 template<typename T>
 inline void MatrixDescomposition<T>::inverse_aux(const Matrix<T>& B,
 		Matrix<T>& X) {
